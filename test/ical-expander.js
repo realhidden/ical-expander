@@ -121,3 +121,22 @@ it('should support open ended limits', function () {
   // events.events.forEach(e => console.log(e.summary, e.uid));
   // events.occurrences.forEach(o => console.log(o.item.summary, o.item.uid));
 });
+
+it('should return proper occurrences for bug-2023-11-11.ics', function () {
+  const events = new IcalExpander({ics: fs.readFileSync(path.join(__dirname, 'bug-2023-11-11.ics'), 'utf-8')})
+      .between(new Date('2023-11-11T00:00:00.000Z'), new Date('2023-11-19T00:00:00.000Z'));
+
+  assert.equal(events.occurrences.length, 7);
+  const strEvents = events.occurrences.map(function (o) {
+    return o.startDate.toJSDate().toISOString();
+  }).join(",");
+  assert.equal(strEvents, [
+    '2023-11-12T17:30:00.000Z',
+    '2023-11-13T17:30:00.000Z',
+    '2023-11-14T17:30:00.000Z',
+    '2023-11-15T17:30:00.000Z',
+    '2023-11-16T17:30:00.000Z',
+    '2023-11-17T17:30:00.000Z',
+    '2023-11-18T17:30:00.000Z'
+  ].join(","));
+});

@@ -88,6 +88,10 @@ class IcalExpander {
             // TODO check that within same day?
             const exception = exceptions.find(ex => ex.uid === event.uid && ex.recurrenceId.toJSDate().getTime() === occurrence.startDate.toJSDate().getTime());
 
+            // iterators are not reliable, they are not in date order
+            // isOccurrenceExcluded comes first in iterators (see bug 2023-11-11)
+            if (!exception && isOccurrenceExcluded) continue;
+
             // We have passed the max date, stop
             if (before && startTime > before.getTime()) break;
 
